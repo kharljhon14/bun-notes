@@ -26,21 +26,35 @@ export default function NotesForm() {
       className="flex flex-col gap-y-4"
     >
       <div>
-        <Label>Title</Label>
-        <Input {...register('title')} />
+        <Label htmlFor="title">Title</Label>
+        <Input
+          id="title"
+          {...register('title')}
+        />
         {errors.title?.message && (
-          <Label className="text-red-500 text-xs">{errors.title?.message}</Label>
+          <Label
+            htmlFor="title"
+            className="text-red-500 text-xs"
+          >
+            {errors.title?.message}
+          </Label>
         )}
       </div>
 
       <div>
-        <Label>Description</Label>
+        <Label htmlFor="description">Description</Label>
         <Textarea
+          id="description"
           rows={12}
           {...register('description')}
         />
         {errors.description?.message && (
-          <Label className="text-red-500 text-xs">{errors.description?.message}</Label>
+          <Label
+            htmlFor="description"
+            className="text-red-500 text-xs"
+          >
+            {errors.description?.message}
+          </Label>
         )}
       </div>
       <Button
