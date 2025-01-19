@@ -1,15 +1,39 @@
 'use client';
 
+import { Note } from '@/@types/note';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { noteSchema, NoteSchemaType } from '@/schemas/note';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { SubmitHandler, useForm } from 'react-hook-form';
 
-export default function NotesForm() {
+interface Props {
+  setOpen: (value: boolean) => void;
+}
+
+export default function NotesForm({ setOpen }: Props) {
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: async (note: Omit<Note, 'id'>) => {
+      const respone = await fetch('http://localhost:5001/api/v1/notes', {
+        headers: { 'Content-Type': 'application/json' },
+        method: 'POST',
+        body: JSON.stringify(note)
+      });
+
+      return await respone.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['notes'] });
+      setOpen(false);
+    }
+  });
+
   const {
     register,
     handleSubmit,
@@ -17,7 +41,7 @@ export default function NotesForm() {
   } = useForm<NoteSchemaType>({ resolver: zodResolver(noteSchema) });
 
   const onSubmit: SubmitHandler<NoteSchemaType> = (values) => {
-    console.log(values);
+    mutation.mutate(values);
   };
 
   return (

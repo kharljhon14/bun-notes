@@ -1,3 +1,5 @@
+'use client';
+
 import {
   Dialog,
   DialogContent,
@@ -7,12 +9,22 @@ import {
 } from '@/components/ui/dialog';
 import { Plus } from 'lucide-react';
 import NotesForm from './notes-form';
+import { useState } from 'react';
 
 export default function CreateNoteModal() {
+  const [open, setOpen] = useState(false);
+
   return (
     <div className="fixed bottom-10 right-24">
-      <Dialog>
-        <DialogTrigger className="rounded-full size-20 bg-black text-white flex items-center justify-center">
+      <Dialog
+        open={open}
+        onOpenChange={setOpen}
+      >
+        <DialogTrigger
+          onClick={() => setOpen(true)}
+          asChild
+          className="rounded-full size-20 bg-black text-white flex items-center justify-center"
+        >
           <Plus
             strokeWidth={1}
             size={36}
@@ -23,7 +35,7 @@ export default function CreateNoteModal() {
             <DialogTitle>Create Note</DialogTitle>
           </DialogHeader>
           <div>
-            <NotesForm />
+            <NotesForm setOpen={setOpen} />
           </div>
         </DialogContent>
       </Dialog>
