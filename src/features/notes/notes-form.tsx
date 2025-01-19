@@ -22,14 +22,22 @@ export default function NotesForm({ setOpen }: Props) {
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
-    mutationFn: async (note: Omit<Note, 'id'>) => {
-      const respone = await fetch('http://localhost:5001/api/v1/notes', {
-        headers: { 'Content-Type': 'application/json' },
-        method: 'POST',
-        body: JSON.stringify(note)
-      });
-
-      return await respone.json();
+    mutationFn: async (newNote: Omit<Note, 'id'>) => {
+      if (note) {
+        const respone = await fetch(`http://localhost:5001/api/v1/notes/${note.id}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(newNote)
+        });
+        return await respone.json();
+      } else {
+        const respone = await fetch('http://localhost:5001/api/v1/notes', {
+          headers: { 'Content-Type': 'application/json' },
+          method: 'POST',
+          body: JSON.stringify(newNote)
+        });
+        return await respone.json();
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['notes'] });
