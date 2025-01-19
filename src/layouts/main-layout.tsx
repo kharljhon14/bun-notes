@@ -1,3 +1,4 @@
+import { NoteContextProvider } from '@/context/noteWeather';
 import Header from '@/features/common/header';
 import CreateNoteModal from '@/features/notes/create-note-modal';
 import QueryProvider from '@/providers/query-provider';
@@ -8,10 +9,12 @@ export default function MainLayout({ children }: PropsWithChildren) {
     <>
       <Header />
       <QueryProvider>
-        <main className="container mx-auto my-10 relative">
-          {children}
-          <CreateNoteModal />
-        </main>
+        <NoteContextProvider>
+          <main className="container mx-auto my-10 relative">
+            {children}
+            <CreateNoteModal />
+          </main>
+        </NoteContextProvider>
       </QueryProvider>
     </>
   );

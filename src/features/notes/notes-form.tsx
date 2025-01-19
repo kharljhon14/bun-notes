@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { useNoteContext } from '@/context/noteWeather';
 import { noteSchema, NoteSchemaType } from '@/schemas/note';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -16,6 +17,8 @@ interface Props {
 }
 
 export default function NotesForm({ setOpen }: Props) {
+  const { note, resetNote } = useNoteContext();
+
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
@@ -30,6 +33,7 @@ export default function NotesForm({ setOpen }: Props) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['notes'] });
+      resetNote();
       setOpen(false);
     }
   });
@@ -53,7 +57,7 @@ export default function NotesForm({ setOpen }: Props) {
         <Label htmlFor="title">Title</Label>
         <Input
           id="title"
-          {...register('title')}
+          {...register('title', { value: note?.title })}
         />
         {errors.title?.message && (
           <Label
@@ -70,7 +74,7 @@ export default function NotesForm({ setOpen }: Props) {
         <Textarea
           id="description"
           rows={12}
-          {...register('description')}
+          {...register('description', { value: note?.description })}
         />
         {errors.description?.message && (
           <Label
