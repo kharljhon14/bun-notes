@@ -53,7 +53,12 @@ export default function NotesForm({ setOpen }: Props) {
   } = useForm<NoteSchemaType>({ resolver: zodResolver(noteSchema) });
 
   const onSubmit: SubmitHandler<NoteSchemaType> = (values) => {
-    mutation.mutate(values);
+    if (note?.title === values.title && note.description === note.description) {
+      resetNote();
+      setOpen(false);
+    } else {
+      mutation.mutate(values);
+    }
   };
 
   return (
